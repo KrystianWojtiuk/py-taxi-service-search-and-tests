@@ -38,14 +38,18 @@ class DriverLicenseUpdateForm(forms.ModelForm):
         fields = ["license_number"]
 
     def clean_license_number(self):
-        license_number = self.cleaned_data["license_number"]
-        pattern = r"^[A-Z]{3}\d{5}$"
+        return validate_license_number(self.cleaned_data["license_number"])
 
-        if not re.fullmatch(pattern, license_number):
-            raise forms.ValidationError(
-                "License number must be 8 characters: first 3 uppercase letters followed by 5 digits (e.g., ABC12345)."
-            )
-        return license_number
+
+def validate_license_number(license_number):
+    pattern = r"^[A-Z]{3}\d{5}$"
+
+    if not re.fullmatch(pattern, license_number):
+        raise forms.ValidationError(
+            "License number must be 8 characters: first 3 uppercase "
+            "letters followed by 5 digits (e.g., ABC12345)."
+        )
+    return license_number
 
 
 class DriverSearchForm(forms.Form):
